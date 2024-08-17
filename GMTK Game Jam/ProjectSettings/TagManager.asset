@@ -5,6 +5,10 @@ TagManager:
   serializedVersion: 2
   tags:
   - Button
+  - BombWall
+  - StickyWall
+  - FanArea
+  - MoveBlock
   layers:
   - Default
   - TransparentFX

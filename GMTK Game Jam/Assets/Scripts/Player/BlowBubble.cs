@@ -4,82 +4,79 @@ using UnityEngine;
 
 public class BlowBubble : MonoBehaviour
 {
-    [SerializeField] PlayerMovement playerMovement;
-    [SerializeField] Transform bubbleAnchor;
-    [SerializeField] float maxBubbleRadius = 5;
-    [SerializeField] float bubbleScaleRate = 1f;
-    [SerializeField] float timeBeforeShake = 1f;
-    [SerializeField] float vibrationIntensity = 0.1f;
-    [SerializeField] float vibrationSpeed = 5f;
+    [Header("Bubble")]
+    [SerializeField] Transform bubbleAnchor; //Where the bubble spawn
+    [SerializeField] float minRadius;
+    [SerializeField] float maxRadius;
+    [SerializeField] float scaleMultiplier;
+    float radius;
 
-    [SerializeField] GameObject bubbleSprite;
+    [SerializeField] GameObject bubblePrefab;
     GameObject activeBubble;
-    Vector2 bubblePos;
 
+    [Header("Sound")]
+    [SerializeField] AudioSource audioSource;
 
-    float time;
-    float size;
+    [Header("Gum Types")]
+    [SerializeField] GameObject normalBubble;
+
     bool blowing = false;
 
-
-    [SerializeField] GameObject NormalBubble;
-
-    void Start()
-    {
-        
-    }
+    [Header("Scripts")]
+    [SerializeField] PlayerMovement playerMovement;
 
     // Update is called once per frame
     void Update()
     {
         if (Input.GetKey(KeyCode.F))
         {
+            //Not blowing start blowing the bubble
             if (!blowing)
             {
-                activeBubble = Instantiate(bubbleSprite);
-                activeBubble.transform.position = bubbleAnchor.position;
-                activeBubble.transform.parent = bubbleAnchor;
-                blowing = true;
+                activeBubble = Instantiate(bubblePrefab);
+                activeBubble.transform.position = bubbleAnchor.transform.position;
+                activeBubble.transform.parent = bubbleAnchor.transform;
+                audioSource.Play();
             }
-            size += bubbleScaleRate * Time.deltaTime;
-            if (size > maxBubbleRadius)
+
+            //Increase the radius if it still possible to do so
+            if (radius < maxRadius)
             {
-                size = maxBubbleRadius;
-                time += Time.deltaTime;
+                radius += scaleMultiplier * Time.deltaTime;
+                activeBubble.transform.localScale = Vector3.one * radius;
             }
-            activeBubble.transform.localScale = Vector3.one* size;
-            bubblePos = activeBubble.transform.GetChild(0).position;
-            if (time > timeBeforeShake)
+            else
             {
-                activeBubble.transform.localPosition = vibrationIntensity * new Vector3(
-                    Mathf.PerlinNoise(vibrationSpeed * Time.time, 1),
-                    Mathf.PerlinNoise(vibrationSpeed * Time.time, 2),
-                    Mathf.PerlinNoise(vibrationSpeed * Time.time, 3));
+                audioSource.Stop();
             }
+
+            blowing = true;
         }
         else
         {
-            //Shoot Bubble
-            if (activeBubble != null)
-            {
-                Destroy(activeBubble);
-            }
+            //Bubble has just been blown
             if (blowing)
             {
-                ShootBubble(size);
+                audioSource.Stop();
+                //Allowed to shoot
+                if (radius > minRadius)
+                {
+                    ShootBubble(radius);
+                }
+                Destroy(activeBubble);
+                blowing = false;
+                radius = 0;
             }
-            blowing = false;
-            size = 0;
-            time = 0;
+             
         }
     }
 
     void ShootBubble(float size)
     {
-        GameObject bubble = Instantiate(NormalBubble);
+        GameObject bubble = Instantiate(normalBubble);
         bubble.transform.localScale = Vector3.one * size;
-        bubble.transform.position = bubblePos;
-        bubble.GetComponent<BubbleMovement>().SetupBubble(playerMovement.GetLookDirection());
+        bubble.transform.position = activeBubble.transform.GetChild(0).transform.position;
+        bubble.GetComponent<BubbleMovement>().SetupBubble(playerMovement.GetLookDirection(), size);
 
     }
 }

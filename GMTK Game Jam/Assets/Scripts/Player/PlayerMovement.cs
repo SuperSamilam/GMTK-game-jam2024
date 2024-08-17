@@ -3,10 +3,26 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 
+//Smooth Camera Follow
+//No Ledge boosting
+
 public class PlayerMovement : MonoBehaviour
 {
+    [Header("Movement")]
+    [SerializeField] float walkSpeed;
+    [SerializeField] float sprintSpeed;
+    float moveSpeed;
+
+    [Header("Camera")]
+    [SerializeField] Camera cam;
+    [SerializeField] float camMoveThres;
+    bool moveCamera;
+
+    [Header("Keys")]
+    [SerializeField] KeyCode jumpKey;
+    [SerializeField] KeyCode walkKey;
+
     float horizontal;
-    public float speed = 8f;
     public float jumpingPower = 16f;
     bool isFacingRight = true;
 
@@ -20,21 +36,60 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        horizontal = Input.GetAxisRaw("Horizontal");
-         
-        if (Input.GetButtonDown("Jump") && IsGrounded())
-        {
-            rb.velocity = new Vector2(rb.velocity.x, jumpingPower);
-        }
+        HandleWalk();
+        HandleJump();
+        HandleCamera();
 
         Flip();
     }
 
+    void HandleWalk()
+    {
+        horizontal = Input.GetAxisRaw("Horizontal");
+        if (IsGrounded() && Input.GetKey(walkKey))
+        {
+            moveSpeed = walkSpeed;
+        }
+        else
+        {
+            moveSpeed = sprintSpeed;
+        }
+    }
+    void HandleJump()
+    {
+        if (Input.GetKeyDown(jumpKey) && IsGrounded())
+        {
+            rb.velocity = new Vector2(rb.velocity.x, jumpingPower);
+        }
+    }
+    void HandleCamera()
+    {
+        if (Vector2.Distance(cam.transform.position, this.transform.position) > camMoveThres)
+        {
+            moveCamera = true;
+        }
+        if (moveCamera)
+        {
+            Vector2 p = Vector2.Lerp(cam.transform.position, transform.position, moveSpeed*Time.deltaTime);
+            Vector3 pos = new Vector3(p.x, p.y, cam.transform.position.z);
+            cam.transform.position = pos;
+        }
+    }
+    //Ground Check
     bool IsGrounded()
     {
         return Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
     }
 
+    //Movement Updaters
+    private void FixedUpdate()
+    {
+        rb.velocity = new Vector2(horizontal * moveSpeed, rb.velocity.y);
+    }
+
+
+
+    //Direction
     void Flip()
     {
         if (isFacingRight && horizontal < 0f || !isFacingRight && horizontal > 0f) 
@@ -45,12 +100,6 @@ public class PlayerMovement : MonoBehaviour
             transform.localScale = localScale;
         }
     }
-
-    private void FixedUpdate()
-    {
-        rb.velocity = new Vector2(horizontal * speed, rb.velocity.y);
-    }
-
     public Vector2 GetLookDirection()
     {
        if (isFacingRight)
@@ -62,10 +111,4 @@ public class PlayerMovement : MonoBehaviour
             return new Vector2(-1, 0);
         }
     }
-
-
-    //Hoppa
-    //Gå 
-    //Springa
-
 }
