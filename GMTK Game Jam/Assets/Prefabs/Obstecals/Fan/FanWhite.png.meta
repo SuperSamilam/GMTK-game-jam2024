@@ -1,43 +1,19 @@
 fileFormatVersion: 2
-guid: e6ebbb80ad1e0b24b88e00789000b457
+guid: a7dde9f3930985d409dcfb30c6fe9f3b
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 767754133582396283
-    second: BetterBubbleGum_0
+      213: -8756574404553891926
+    second: FanWhite_0
   - first:
-      213: 28907168848803813
-    second: BetterBubbleGum_1
+      213: 7527012337932341544
+    second: FanWhite_1
   - first:
-      213: 1886479561795393855
-    second: BetterBubbleGum_2
+      213: -6496977049176041396
+    second: FanWhite_2
   - first:
-      213: 8714783685353719631
-    second: BetterBubbleGum_3
-  - first:
-      213: -5896404993613984852
-    second: BetterBubbleGum_4
-  - first:
-      213: 4925357704790351763
-    second: BetterBubbleGum_5
-  - first:
-      213: 4388460413896724450
-    second: BetterBubbleGum_6
-  - first:
-      213: 3430712361079026344
-    second: BetterBubbleGum_7
-  - first:
-      213: 3253104987619433939
-    second: BetterBubbleGum_8
-  - first:
-      213: -5492752143454477843
-    second: BetterBubbleGum_9
-  - first:
-      213: -1228685391543082147
-    second: BetterBubbleGum_10
-  - first:
-      213: 1743843727457299697
-    second: BetterBubbleGum_11
+      213: 807873651338570452
+    second: FanWhite_3
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -146,12 +122,33 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: BetterBubbleGum_0
+      name: FanWhite_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 96
+        width: 64
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aaf994f29f56a7680800000000000000
+      internalID: -8756574404553891926
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FanWhite_1
       rect:
         serializedVersion: 2
         x: 0
         y: 64
-        width: 32
+        width: 64
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -160,40 +157,19 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: b7b3407115c97aa00800000000000000
-      internalID: 767754133582396283
+      spriteID: 821907e67d1557860800000000000000
+      internalID: 7527012337932341544
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: BetterBubbleGum_1
-      rect:
-        serializedVersion: 2
-        x: 32
-        y: 64
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 5e7f1babae2b66000800000000000000
-      internalID: 28907168848803813
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: BetterBubbleGum_2
+      name: FanWhite_2
       rect:
         serializedVersion: 2
         x: 0
         y: 32
-        width: 32
+        width: 64
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -202,40 +178,19 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: f3959dc9a2f1e2a10800000000000000
-      internalID: 1886479561795393855
+      spriteID: c481ff5dbc916d5a0800000000000000
+      internalID: -6496977049176041396
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: BetterBubbleGum_3
-      rect:
-        serializedVersion: 2
-        x: 32
-        y: 32
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: f47c0e3c69121f870800000000000000
-      internalID: 8714783685353719631
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: BetterBubbleGum_4
+      name: FanWhite_3
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 32
+        width: 64
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -244,29 +199,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: cab8cc716e2cb2ea0800000000000000
-      internalID: -5896404993613984852
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: BetterBubbleGum_5
-      rect:
-        serializedVersion: 2
-        x: 32
-        y: 0
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 39f13c1acb26a5440800000000000000
-      internalID: 4925357704790351763
+      spriteID: 4daee6b3ec4263b00800000000000000
+      internalID: 807873651338570452
       vertices: []
       indices: 
       edges: []
@@ -274,7 +208,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: ccc8e9ea740990640a5ce8190add5ca7
+    spriteID: 67076c25997742041bb65a3a811ec1e6
     internalID: 0
     vertices: []
     indices: 
@@ -282,12 +216,10 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      BetterBubbleGum_0: 767754133582396283
-      BetterBubbleGum_1: 28907168848803813
-      BetterBubbleGum_2: 1886479561795393855
-      BetterBubbleGum_3: 8714783685353719631
-      BetterBubbleGum_4: -5896404993613984852
-      BetterBubbleGum_5: 4925357704790351763
+      FanWhite_0: -8756574404553891926
+      FanWhite_1: 7527012337932341544
+      FanWhite_2: -6496977049176041396
+      FanWhite_3: 807873651338570452
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

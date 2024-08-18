@@ -3,112 +3,131 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-//Smooth Camera Follow
-//No Ledge boosting
+//Should provbely pop the bubble if you are flying for to long
 
 public class PlayerMovement : MonoBehaviour
 {
-    [Header("Movement")]
-    [SerializeField] float walkSpeed;
-    [SerializeField] float sprintSpeed;
+    [SerializeField] float speed = 5;
+    [SerializeField] float airSpeed = 8;
+    [SerializeField] float floatSpeed = 3;
     float moveSpeed;
 
-    [Header("Camera")]
-    [SerializeField] Camera cam;
-    [SerializeField] float camMoveThres;
-    bool moveCamera;
-
-    [Header("Keys")]
-    [SerializeField] KeyCode jumpKey;
-    [SerializeField] KeyCode walkKey;
-
-    float horizontal;
-    public float jumpingPower = 16f;
-    bool isFacingRight = true;
+    [SerializeField] float jumpPower = 16f;
+    public bool isFacingRight = true;
+    public bool alowedToMove = true;
+    public float bubbleRadius = 0;
 
     [SerializeField] Rigidbody2D rb;
+    [SerializeField] Animator animator;
     [SerializeField] Transform groundCheck;
     [SerializeField] LayerMask groundLayer;
 
-    void Start()
-    {
-    }
+    float xInput;
+
+    PlayerState state;
+    enum PlayerState { Walking, Idle, Jump}
 
     void Update()
     {
-        HandleWalk();
-        HandleJump();
-        HandleCamera();
-
-        Flip();
-    }
-
-    void HandleWalk()
-    {
-        horizontal = Input.GetAxisRaw("Horizontal");
-        if (IsGrounded() && Input.GetKey(walkKey))
+        if (alowedToMove)
         {
-            moveSpeed = walkSpeed;
+            rb.gravityScale = 8;
+            xInput = Input.GetAxis("Horizontal");
+            moveSpeed = speed;
+            if (Input.GetButtonDown("Jump") && IsGrounded())
+            {
+                rb.velocity = new Vector2(rb.velocity.x, jumpPower);
+            }
+            else if (!IsGrounded()) 
+            {
+                moveSpeed = airSpeed;
+            }
+
+            Flip();
         }
         else
         {
-            moveSpeed = sprintSpeed;
+            if (IsGrounded())
+            {
+                xInput = 0;
+                if (Input.GetButtonDown("Jump") && IsGrounded())
+                {
+                    rb.velocity = new Vector2(rb.velocity.x, Mathf.Max(jumpPower * bubbleRadius, jumpPower
+                        ));
+                }
+            }
+            else//Not grounded
+            {
+                xInput = Input.GetAxis("Horizontal");
+                rb.gravityScale = 3;
+            }
         }
-    }
-    void HandleJump()
-    {
-        if (Input.GetKeyDown(jumpKey) && IsGrounded())
-        {
-            rb.velocity = new Vector2(rb.velocity.x, jumpingPower);
-        }
-    }
-    void HandleCamera()
-    {
-        if (Vector2.Distance(cam.transform.position, this.transform.position) > camMoveThres)
-        {
-            moveCamera = true;
-        }
-        if (moveCamera)
-        {
-            Vector2 p = Vector2.Lerp(cam.transform.position, transform.position, moveSpeed*Time.deltaTime);
-            Vector3 pos = new Vector3(p.x, p.y, cam.transform.position.z);
-            cam.transform.position = pos;
-        }
-    }
-    //Ground Check
-    bool IsGrounded()
-    {
-        return Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
+
+        HandleState();
     }
 
-    //Movement Updaters
+    void HandleState()
+    {
+        state = PlayerState.Idle;
+        if (xInput != 0)
+        {
+            state = PlayerState.Walking;
+        }
+        if (!IsGrounded())
+        {
+            state = PlayerState.Jump;
+        }
+
+        if (state == PlayerState.Walking)
+        {
+            animator.SetBool("Walking", true);
+        }
+        else
+        {
+            animator.SetBool("Walking", false);
+        }
+    }
+
     private void FixedUpdate()
     {
-        rb.velocity = new Vector2(horizontal * moveSpeed, rb.velocity.y);
-    }
-
-
-
-    //Direction
-    void Flip()
-    {
-        if (isFacingRight && horizontal < 0f || !isFacingRight && horizontal > 0f) 
+        if (alowedToMove)
         {
-            isFacingRight = !isFacingRight;
-            Vector3 localScale = transform.localScale;
-            localScale.x *= -1;
-            transform.localScale = localScale;
-        }
-    }
-    public Vector2 GetLookDirection()
-    {
-       if (isFacingRight)
-        {
-            return new Vector2(1, 0);
+            Vector2 direction = new Vector2(xInput, 0);
+            rb.velocity = new Vector2(xInput * moveSpeed, rb.velocity.y);
         }
         else
         {
-            return new Vector2(-1, 0);
+            if (IsGrounded())
+            {
+                rb.velocity = new Vector2(0, rb.velocity.y);
+            }
+            else
+            {
+                rb.velocity = new Vector2(xInput * floatSpeed, rb.velocity.y);
+                if (rb.velocity.y < 0)
+                {
+                    rb.velocity = new Vector2(rb.velocity.x, 0);
+                }
+            }
+
         }
     }
+
+
+
+    bool IsGrounded()
+    {
+        return Physics2D.OverlapCircle(groundCheck.position, 0.1f, groundLayer);
+    }
+    void Flip()
+    {
+        if (isFacingRight && xInput < 0f || !isFacingRight && xInput > 0)
+        {
+            isFacingRight = !isFacingRight;
+            Vector3 ls = transform.localScale;
+            ls.x *= -1f;
+            transform.localScale = ls;
+        }
+    }
+
 }

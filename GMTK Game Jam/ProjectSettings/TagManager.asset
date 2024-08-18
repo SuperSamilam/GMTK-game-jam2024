@@ -17,8 +17,8 @@ TagManager:
   - Water
   - UI
   - BounceWall
-  - 
-  - 
+  - Player
+  - BubbleGum
   - 
   - 
   - 
@@ -45,4 +45,10 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Player
+    uniqueID: 3468352547
+    locked: 0
+  - name: BubbelGum
+    uniqueID: 109850745
     locked: 0
