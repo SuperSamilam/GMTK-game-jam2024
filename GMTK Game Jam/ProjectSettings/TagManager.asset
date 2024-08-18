@@ -4,11 +4,9 @@
 TagManager:
   serializedVersion: 2
   tags:
+  - Block
+  - Spike
   - Button
-  - BombWall
-  - StickyWall
-  - FanArea
-  - MoveBlock
   layers:
   - Default
   - TransparentFX
@@ -16,10 +14,10 @@ TagManager:
   - Ground
   - Water
   - UI
-  - BounceWall
+  - 
   - Player
   - BubbleGum
-  - 
+  - Block
   - 
   - 
   - 

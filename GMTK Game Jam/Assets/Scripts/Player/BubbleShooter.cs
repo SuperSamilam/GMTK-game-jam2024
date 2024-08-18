@@ -19,15 +19,13 @@ public class BubbleShooter : MonoBehaviour
 
     private void Update()
     {
-        //Started Blowing or is blowing
         if (Input.GetMouseButton(0))
         {
-            playerMovement.alowedToMove = false;
-            //Didint Blow Before
             if (!blowing)
             {
                 radius = 0;
                 blowing = true;
+                playerMovement.blowing = true;
                 activeBubble = Instantiate(bubbleExpandable);
                 activeBubble.transform.position = bubbleSpawn.position;
                 activeBubble.transform.parent = transform;
@@ -36,7 +34,6 @@ public class BubbleShooter : MonoBehaviour
             if (radius < maxRadius)
             {
                 radius += growthScale * Time.deltaTime;
-                playerMovement.bubbleRadius = radius;
                 activeBubble.transform.localScale = Vector3.one * radius;
             }
         }
@@ -51,11 +48,9 @@ public class BubbleShooter : MonoBehaviour
 
                 Destroy(activeBubble);
                 blowing = false;
+                playerMovement.blowing = false;
             }
-            playerMovement.alowedToMove = true;
         }
-
-        //SpawnBubble();
     }
 
     void SpawnBubble()

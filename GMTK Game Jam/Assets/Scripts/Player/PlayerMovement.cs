@@ -7,64 +7,108 @@ using UnityEngine.Rendering;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [SerializeField] float speed = 5;
-    [SerializeField] float airSpeed = 8;
-    [SerializeField] float floatSpeed = 3;
-    float moveSpeed;
+    [Header("Speeds")]
+    [SerializeField] float speed;
+    [SerializeField] float airSpeed;
+    [SerializeField] float floatSpeed;
+    [SerializeField] float moveSpeed;
 
-    [SerializeField] float jumpPower = 16f;
-    public bool isFacingRight = true;
-    public bool alowedToMove = true;
-    public float bubbleRadius = 0;
-
-    [SerializeField] Rigidbody2D rb;
-    [SerializeField] Animator animator;
-    [SerializeField] Transform groundCheck;
-    [SerializeField] LayerMask groundLayer;
+    [Header("Jumps")]
+    [SerializeField] float jumpPower;
+    [SerializeField] float bubbleJumpPower;
 
     float xInput;
+    [SerializeField] Rigidbody2D rb;
+    [SerializeField] Transform groundCheck;
+    [SerializeField] Transform blockCheck;
+    [SerializeField] LayerMask groundLayer;
+    [SerializeField] LayerMask blockLayer;
+    [SerializeField] Animator animator;
+    public bool isFacingRight = true;
+    public bool blowing = false;
 
-    PlayerState state;
-    enum PlayerState { Walking, Idle, Jump}
 
+    public enum PlayerState { Walking, Idle, Jump};
+
+    public PlayerState state;
     void Update()
     {
-        if (alowedToMove)
+        if (!blowing)
         {
-            rb.gravityScale = 8;
-            xInput = Input.GetAxis("Horizontal");
-            moveSpeed = speed;
+            if (!BlockCheck())
+            {
+                xInput = Input.GetAxisRaw("Horizontal");
+                moveSpeed = speed;
+            }
+            else
+            {
+                xInput = Input.GetAxisRaw("Horizontal");
+                Flip();
+
+                moveSpeed = 0;
+                rb.velocity = new Vector2(0, rb.velocity.y);
+            }
+        
+            //Jumpd
             if (Input.GetButtonDown("Jump") && IsGrounded())
             {
                 rb.velocity = new Vector2(rb.velocity.x, jumpPower);
             }
-            else if (!IsGrounded()) 
+            else if (!IsGrounded())
             {
-                moveSpeed = airSpeed;
+                moveSpeed = airSpeed; 
             }
-
-            Flip();
         }
         else
         {
-            if (IsGrounded())
+            xInput = 0;
+            if (Input.GetButtonDown("Jump") && IsGrounded())
             {
-                xInput = 0;
-                if (Input.GetButtonDown("Jump") && IsGrounded())
-                {
-                    rb.velocity = new Vector2(rb.velocity.x, Mathf.Max(jumpPower * bubbleRadius, jumpPower
-                        ));
-                }
+                rb.velocity = new Vector2(rb.velocity.x, bubbleJumpPower);
             }
-            else//Not grounded
+            else if (!IsGrounded())
             {
-                xInput = Input.GetAxis("Horizontal");
-                rb.gravityScale = 3;
+                if (!BlockCheck())
+                {
+                    xInput = Input.GetAxisRaw("Horizontal");
+                }
             }
         }
 
         HandleState();
     }
+
+    private void FixedUpdate()
+    {
+        //Walk
+        if (!blowing)
+        {
+            rb.gravityScale = 8;
+            float horizontalMovement = xInput * moveSpeed * Time.deltaTime * 10f;
+            rb.velocity = new Vector2(horizontalMovement, rb.velocity.y);
+        }
+        else
+        {
+            rb.gravityScale = 3;
+            if (!IsGrounded())
+            {
+                float horizontalMovement = xInput * floatSpeed * Time.deltaTime * 10f;
+                rb.velocity = new Vector2(horizontalMovement, rb.velocity.y);
+
+                if (rb.velocity.y < 0f)
+                {
+                    rb.velocity = new Vector2(rb.velocity.x, 0);
+                }
+            }
+            else
+            {
+                rb.velocity = new Vector2(0, rb.velocity.y);
+            }
+        }
+
+        Flip();
+    }
+
 
     void HandleState()
     {
@@ -88,36 +132,14 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void FixedUpdate()
-    {
-        if (alowedToMove)
-        {
-            Vector2 direction = new Vector2(xInput, 0);
-            rb.velocity = new Vector2(xInput * moveSpeed, rb.velocity.y);
-        }
-        else
-        {
-            if (IsGrounded())
-            {
-                rb.velocity = new Vector2(0, rb.velocity.y);
-            }
-            else
-            {
-                rb.velocity = new Vector2(xInput * floatSpeed, rb.velocity.y);
-                if (rb.velocity.y < 0)
-                {
-                    rb.velocity = new Vector2(rb.velocity.x, 0);
-                }
-            }
-
-        }
-    }
-
-
-
     bool IsGrounded()
     {
-        return Physics2D.OverlapCircle(groundCheck.position, 0.1f, groundLayer);
+        return Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
+    }
+
+    bool BlockCheck()
+    {
+        return Physics2D.OverlapBox(blockCheck.position, new Vector2(0.1f, 1.1f), 0, blockLayer);
     }
     void Flip()
     {
@@ -129,5 +151,16 @@ public class PlayerMovement : MonoBehaviour
             transform.localScale = ls;
         }
     }
+
+    //private void OnDrawGizmos()
+    //{
+    //    Gizmos.color = Color.red;
+
+    //    Vector2 center = blockCheck.position;
+
+    //     Draw the wireframe of the box in the scene view
+    //    Gizmos.matrix = Matrix4x4.TRS(center, Quaternion.Euler(0, 0, 0), Vector3.one);
+    //    Gizmos.DrawWireCube(Vector3.zero, new Vector2(0.1f, 1.1f));
+    //}
 
 }

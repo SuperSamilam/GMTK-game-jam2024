@@ -9,26 +9,19 @@ public class Bubble : MonoBehaviour
     public float size;
     public Vector2 dir;
     public Rigidbody2D rb;
-    public AnimationCurve sizeCurve;
-    private void Start()
-    {
-
-    }
+    public AnimationCurve massCurve;
+    public AnimationCurve speedCurve;
 
     public void Setup(float rsize, Vector2 rdir)
     {
         size = rsize;
         dir = rdir;
+
         transform.localScale = Vector3.one * size;
-        rb.mass = sizeCurve.Evaluate(size);
+        rb.mass = massCurve.Evaluate(size);
+        speed = speedCurve.Evaluate(size);
+
         rb.velocity = dir * speed;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-
     }
 
     void Pop()
@@ -36,17 +29,17 @@ public class Bubble : MonoBehaviour
         Destroy(this.gameObject);
     }
 
-    private void FixedUpdate()
-    {
-
-    }
-
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.tag == "MoveBlock")
+        if (collision.gameObject.tag == "Block")
+        {
+            Rigidbody2D crb = collision.gameObject.GetComponent<Rigidbody2D>();
+            crb.AddForce(new Vector2(rb.mass * Mathf.Sign(dir.x), 0), ForceMode2D.Impulse);
+            Pop();
+        }
+        if (collision.gameObject.tag == "Spike")
         {
             Pop();
-            Debug.Log("coll");
         }
         else//Just bounce
         {
@@ -54,10 +47,4 @@ public class Bubble : MonoBehaviour
             dir = Vector2.Reflect(dir, collision.contacts[0].normal);
         }
     }
-
-
-
-
-
-
 }
