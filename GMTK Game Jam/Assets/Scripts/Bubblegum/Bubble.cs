@@ -37,8 +37,13 @@ public class Bubble : MonoBehaviour
             crb.AddForce(new Vector2(rb.mass * Mathf.Sign(dir.x), 0), ForceMode2D.Impulse);
             Pop();
         }
-        if (collision.gameObject.tag == "Spike")
+        else if (collision.gameObject.tag == "Spike")
         {
+            Pop();
+        }
+        else if (collision.gameObject.tag == "Button")
+        {
+            collision.gameObject.GetComponent<Button>().Press();
             Pop();
         }
         else//Just bounce
