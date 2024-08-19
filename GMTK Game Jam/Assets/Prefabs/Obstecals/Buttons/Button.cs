@@ -7,7 +7,7 @@ public class Button : MonoBehaviour
     public enum ButtonType { Normal, Timed};
     public ButtonType type;
 
-    public enum ButtonAction { Door, Spawn};
+    public enum ButtonAction { Door, Spawn, Destory};
     public ButtonAction action;
     public Animator animator;
 
@@ -16,8 +16,8 @@ public class Button : MonoBehaviour
     float time;
     public float ReactivetionTime;
 
+    public bool activeMode = true;
     public GameObject door;
-    public Transform spawnPos;
     public GameObject spawnItem;
 
     public void Press()
@@ -25,12 +25,15 @@ public class Button : MonoBehaviour
         animator.SetBool("Clicked", true);
         if (action == ButtonAction.Door)
         {
-            door.active = false;
+            door.active = activeMode;
         }
         else if (action == ButtonAction.Spawn)
         {
             GameObject obj = Instantiate(spawnItem);
-            obj.transform.position = spawnPos.position;
+        }
+        else if (action == ButtonAction.Destory)
+        {
+            Destroy(door);
         }
         time = 0;
         pressed = true;
@@ -41,7 +44,7 @@ public class Button : MonoBehaviour
         animator.SetBool("Clicked", false);
         if (action == ButtonAction.Door)
         {
-            door.active = true;
+            door.active = !activeMode;
         }
         pressed = false;
     }

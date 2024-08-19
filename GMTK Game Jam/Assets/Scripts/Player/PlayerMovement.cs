@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -26,30 +27,30 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] Animator animator;
     public bool isFacingRight = true;
     public bool blowing = false;
-
+    public bool allowedToShoot = true;
 
     public enum PlayerState { Walking, Idle, Jump};
+
+    [SerializeField] AreaEffector2D[] fans;
+    [SerializeField] LayerMask fanLayerBlowing;
+    [SerializeField] LayerMask fanLayerNormal;
 
     public PlayerState state;
     void Update()
     {
         if (!blowing)
         {
-            if (!BlockCheck())
+            foreach (var f in fans)
             {
+                f.colliderMask = fanLayerNormal;
+            }
+            allowedToShoot = true;
+
                 xInput = Input.GetAxisRaw("Horizontal");
                 moveSpeed = speed;
-            }
-            else
-            {
-                xInput = Input.GetAxisRaw("Horizontal");
-                Flip();
-
-                moveSpeed = 0;
-                rb.velocity = new Vector2(0, rb.velocity.y);
-            }
+            
         
-            //Jumpd
+            //Jump
             if (Input.GetButtonDown("Jump") && IsGrounded())
             {
                 rb.velocity = new Vector2(rb.velocity.x, jumpPower);
@@ -68,9 +69,11 @@ public class PlayerMovement : MonoBehaviour
             }
             else if (!IsGrounded())
             {
-                if (!BlockCheck())
+                allowedToShoot = false;
+                xInput = Input.GetAxisRaw("Horizontal");
+                foreach (var f in fans)
                 {
-                    xInput = Input.GetAxisRaw("Horizontal");
+                    f.colliderMask = fanLayerBlowing;
                 }
             }
         }
@@ -85,7 +88,7 @@ public class PlayerMovement : MonoBehaviour
         {
             rb.gravityScale = 8;
             float horizontalMovement = xInput * moveSpeed * Time.deltaTime * 10f;
-            rb.velocity = new Vector2(horizontalMovement, rb.velocity.y);
+                rb.velocity = new Vector2(horizontalMovement, rb.velocity.y);
         }
         else
         {
@@ -93,7 +96,9 @@ public class PlayerMovement : MonoBehaviour
             if (!IsGrounded())
             {
                 float horizontalMovement = xInput * floatSpeed * Time.deltaTime * 10f;
-                rb.velocity = new Vector2(horizontalMovement, rb.velocity.y);
+
+                    rb.velocity = new Vector2(horizontalMovement, rb.velocity.y);
+                
 
                 if (rb.velocity.y < 0f)
                 {
@@ -137,10 +142,6 @@ public class PlayerMovement : MonoBehaviour
         return Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
     }
 
-    bool BlockCheck()
-    {
-        return Physics2D.OverlapBox(blockCheck.position, new Vector2(0.1f, 1.1f), 0, blockLayer);
-    }
     void Flip()
     {
         if (isFacingRight && xInput < 0f || !isFacingRight && xInput > 0)
@@ -152,15 +153,25 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Star")
+        {
+            //Win
+        }
+    }
+
+
     //private void OnDrawGizmos()
     //{
     //    Gizmos.color = Color.red;
 
     //    Vector2 center = blockCheck.position;
 
-    //     Draw the wireframe of the box in the scene view
     //    Gizmos.matrix = Matrix4x4.TRS(center, Quaternion.Euler(0, 0, 0), Vector3.one);
-    //    Gizmos.DrawWireCube(Vector3.zero, new Vector2(0.1f, 1.1f));
+    //    Gizmos.DrawWireCube(Vector3.zero, new Vector2(0.1f, 1.11f));
     //}
 
 }

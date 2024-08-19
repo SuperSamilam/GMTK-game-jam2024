@@ -7,6 +7,7 @@ TagManager:
   - Block
   - Spike
   - Button
+  - Star
   layers:
   - Default
   - TransparentFX
@@ -41,6 +42,9 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Background
+    uniqueID: 4072486913
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0
@@ -49,4 +53,7 @@ TagManager:
     locked: 0
   - name: BubbelGum
     uniqueID: 109850745
+    locked: 0
+  - name: Nature
+    uniqueID: 2384617079
     locked: 0

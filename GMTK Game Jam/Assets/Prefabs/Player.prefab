@@ -235,7 +235,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 20
   airSpeed: 45
-  floatSpeed: 15
+  floatSpeed: 13
   moveSpeed: 0
   jumpPower: 15
   bubbleJumpPower: 11
@@ -251,6 +251,7 @@ MonoBehaviour:
   animator: {fileID: 2859123177735054707}
   isFacingRight: 1
   blowing: 0
+  allowedToShoot: 1
   state: 0
 --- !u!114 &4983998000375523487
 MonoBehaviour:
