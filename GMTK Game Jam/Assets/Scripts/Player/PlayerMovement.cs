@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.SceneManagement;
 
 //Should provbely pop the bubble if you are flying for to long
 
@@ -27,6 +28,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] Animator animator;
     public bool isFacingRight = true;
     public bool blowing = false;
+    public bool playBlowingSound = false;
     public bool allowedToShoot = true;
 
     public enum PlayerState { Walking, Idle, Jump};
@@ -34,6 +36,17 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] AreaEffector2D[] fans;
     [SerializeField] LayerMask fanLayerBlowing;
     [SerializeField] LayerMask fanLayerNormal;
+
+    public int sceneNumber;
+
+    [SerializeField] AudioSource source;
+    [SerializeField] AudioClip walk;
+    [SerializeField] AudioClip blowingSound;
+    [SerializeField] AudioClip finish;
+
+    bool finised = false;
+    float finishTime = 0;
+    float finishWaitTime = 1f;
 
     public PlayerState state;
     void Update()
@@ -79,6 +92,57 @@ public class PlayerMovement : MonoBehaviour
         }
 
         HandleState();
+
+        if (finised)
+        {
+            if (finishTime > finishWaitTime)
+            {
+                SceneManager.LoadScene(1);
+            }
+            finishTime += Time.deltaTime;
+        }
+        else
+        {
+            HandleAudio();
+        }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            SceneManager.LoadScene(sceneNumber);
+        }
+    }
+
+    void HandleAudio()
+    {
+        if (playBlowingSound && source.clip != blowingSound)
+        {
+            source.clip = blowingSound;
+            source.loop = false;
+            source.Play();
+            return;
+        }
+        else if (!playBlowingSound && source.clip == blowingSound)
+        {
+            source.clip = null;
+            source.Pause();
+        }
+        else if (state == PlayerState.Walking && source.clip != walk)
+        {
+            source.clip = walk;
+            source.loop = true;
+            source.Play();
+            return;
+        }
+        else if (state != PlayerState.Walking && source.clip == walk)
+        {
+            source.clip = null;
+            source.loop = false;
+            source.Pause();
+            return;
+        }
+
+
+
     }
 
     private void FixedUpdate()
@@ -153,13 +217,23 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.tag == "Star")
         {
-            //Win
+            finised = true;
+            source.clip = finish;
+            source.Play();
+            source.loop = false;
+            //SceneManager.LoadScene(1);
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Spike")
+        {
+            SceneManager.LoadScene(sceneNumber);
         }
     }
 

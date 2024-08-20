@@ -33,8 +33,13 @@ public class BubbleShooter : MonoBehaviour
 
             if (radius < maxRadius)
             {
+                playerMovement.playBlowingSound = true;
                 radius += growthScale * Time.deltaTime;
                 activeBubble.transform.localScale = Vector3.one * radius;
+            }
+            else
+            {
+                playerMovement.playBlowingSound = false;
             }
         }
         else //stopped blowing or wasent blowing
@@ -48,6 +53,7 @@ public class BubbleShooter : MonoBehaviour
 
                 Destroy(activeBubble);
                 blowing = false;
+                playerMovement.playBlowingSound = false;
                 playerMovement.blowing = false;
             }
         }

@@ -12,6 +12,9 @@ public class Bubble : MonoBehaviour
     public AnimationCurve massCurve;
     public AnimationCurve speedCurve;
 
+    public float aliveTime = 10f;
+    public float time = 0;
+
     public void Setup(float rsize, Vector2 rdir)
     {
         size = rsize;
@@ -22,6 +25,16 @@ public class Bubble : MonoBehaviour
         speed = speedCurve.Evaluate(size);
 
         rb.velocity = dir * speed;
+    }
+
+    private void Update()
+    {
+        time += Time.deltaTime; 
+
+        if (time > aliveTime)
+        {
+            Pop();
+        }
     }
 
     void Pop()
